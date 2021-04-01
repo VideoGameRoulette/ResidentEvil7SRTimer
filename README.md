@@ -1,11 +1,11 @@
 # ResidentEvil7SRTimer
 Speedrun Timer for Resident Evil 7
 
-Supports
+# Supports
 Windows Microsoft Store Version
 
-Supports Modes
-Main Campaign
-NHG
-NAH
-EOZ
+# Supports Modes
+- Main Campaign
+- NHG
+- NAH
+- EOZ

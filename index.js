@@ -34,7 +34,7 @@ const IsLoadingOrPaused = data => {
 
 const IsGameplay = data => {
 	//console.log("Game Initiallized: ", Boolean(data.GameInit));
-	return data.GameInit == 1 && data.GameplayState != 0;
+	return data.GameInit != 0 && data.GameplayState != 0;
 }
 
 window.onload = function () {

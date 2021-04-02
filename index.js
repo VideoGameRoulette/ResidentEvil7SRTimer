@@ -32,6 +32,11 @@ const IsLoadingOrPaused = data => {
 	return data.GameState == 4 || data.GameState == 8 || data.GameState == 262400 || data.GameState == 262144;
 }
 
+const IsGameplay = data => {
+	//console.log("Game Initiallized: ", Boolean(data.GameInit));
+	return data.GameInit == 1 && data.GameplayState != 0;
+}
+
 window.onload = function () {
 	getData();
 	setInterval(getData, POLLING_RATE);
@@ -54,8 +59,8 @@ const pad = i => i.toString().padStart(2, '0');
 
 const timeDiff = (start, end) => {
   let timestamp = end - start;
+  const milliseconds = Math.floor(timestamp % 1000);
   timestamp = Math.floor(timestamp / 1000);
-
   const hours = Math.floor(timestamp / 60 / 60);
   const minutes = Math.floor(timestamp / 60) - hours * 60;
   const seconds = Math.floor(timestamp % 60);
@@ -64,7 +69,7 @@ const timeDiff = (start, end) => {
     hours,
     minutes,
     seconds,
-    formatted: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
+    formatted: `${pad(hours)}:${pad(minutes)}'${pad(seconds)}"${milliseconds.toString().padStart(3, '0')}`,
     formattedMin: `${pad(minutes)}:${pad(seconds)}`,
   };
 };
@@ -74,8 +79,8 @@ const timeDiffIGT = (start, end) => {
   if (paused.start) {
     timestamp -= CurrentTime() - paused.start;
   }
+  const milliseconds = Math.floor(timestamp % 1000);
   timestamp = Math.floor(timestamp / 1000);
-
   const hours = Math.floor(timestamp / 60 / 60);
   const minutes = Math.floor(timestamp / 60) - hours * 60;
   const seconds = Math.floor(timestamp % 60);
@@ -84,7 +89,7 @@ const timeDiffIGT = (start, end) => {
     hours,
     minutes,
     seconds,
-    formatted: `${pad(hours)}'${pad(minutes)}"${pad(seconds)}`,
+    formatted: `${pad(hours)}:${pad(minutes)}'${pad(seconds)}"${milliseconds.toString().padStart(3, '0')}`,
     formattedMin: `${pad(minutes)}"${pad(seconds)}`,
   };
 };
@@ -172,8 +177,8 @@ function UpdateTimer(data) {
 	}
 	else
 	{
-		rta.innerHTML = `<font size="4" color="#EEE">00'00"00</font>`;
-		igt.innerHTML = `<font size="4" color="#EEE">00'00"00</font>`;
+		rta.innerHTML = `<font size="4" color="#EEE">00:00'00"000</font>`;
+		igt.innerHTML = `<font size="4" color="#EEE">00:00'00"000</font>`;
 	}
 	IsRunEnded(data);
 }
@@ -200,7 +205,20 @@ function PauseTimer(data) {
 	}
 }
 
+function ResetRunData() {
+	timer.start = null;
+	timer.end = null;
+	ballast = 0;
+	paused.start = null;
+	console.log("Menu Detected... Resetting Run Data");
+}
+
 function appendData(data) {
+	if (timerStarted() && !IsGameplay(data))
+	{
+		ResetRunData();
+	}
+	
 	if (data.MapName != mapData.current)
 	{
 		mapData.previous = mapData.current;

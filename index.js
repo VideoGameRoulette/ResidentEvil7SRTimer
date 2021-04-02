@@ -26,10 +26,10 @@ const timerEnded = () => {
 
 var time = 0;
 
-//|| data.GameState == 256 || data.GameState == 512
+//|| data.GameState == 256 || data.GameState == 512 || data.GameState == 262400
 const IsLoadingOrPaused = data => {
 	console.log("GameState: ", data.GameState);
-	return data.GameState == 4 || data.GameState == 8 || data.GameState == 262400 || data.GameState == 262144;
+	return data.GameState == 4 || data.GameState == 8 || data.GameState == 262144;
 }
 
 const IsGameplay = data => {
@@ -94,14 +94,12 @@ const timeDiffIGT = (start, end) => {
   };
 };
 
-function IsRunStarted() 
+function IsRunStarted(data) 
 {
 	//MAIN
 	if (mapData.previous == "None" && mapData.current.includes("Ship3FInfirmaryPast"))
 	{
 		timer.start = CurrentTime();
-		timer.end = null;
-		ballast = 0;
 		mapData.previous = mapData.current;
 		console.log("New Run Started Resetting Timer...");
 	}
@@ -109,8 +107,6 @@ function IsRunStarted()
 	else if (mapData.previous == "None" && mapData.current.includes("MainHouse1FWash") && data.PlayerInventory[0].ItemName == "Knife")
 	{
 		timer.start = CurrentTime();
-		timer.end = null;
-		ballast = 0;
 		mapData.previous = mapData.current;
 		console.log("No Guest House Run Started Resetting Timer...");
 	}
@@ -118,8 +114,6 @@ function IsRunStarted()
 	else if (mapData.previous == "None" && mapData.current.includes("c04_CavePassage01") && data.PlayerInventory[0].ItemName == "CKnife" || mapData.previous == "None" && mapData.current.includes("Ship3FInfirmaryPast"))
 	{
 		timer.start = CurrentTime();
-		timer.end = null;
-		ballast = 0;
 		mapData.previous = mapData.current;
 		console.log("No Guest House Run Started Resetting Timer...");
 	}
@@ -127,8 +121,6 @@ function IsRunStarted()
 	else if (mapData.previous == "None" && mapData.current.includes("sm0878_Carpet08A") || mapData.previous == "None" && mapData.current.includes("Ship3FInfirmaryPast"))
 	{
 		timer.start = CurrentTime();
-		timer.end = null;
-		ballast = 0;
 		mapData.previous = mapData.current;
 		console.log("No Guest House Run Started Resetting Timer...");
 	}
@@ -164,7 +156,7 @@ function IsRunEnded(data)
 function UpdateTimer(data) {
 	var rta = document.getElementById("rta");
 	var igt = document.getElementById("igt");
-	IsRunStarted();
+	IsRunStarted(data);
 	if (timerStarted() && !timerEnded())
 	{
 		rta.innerHTML = `<font size="4" color="#0AA">${timeDiff(timer.start, CurrentTime()).formatted}</font>`;
